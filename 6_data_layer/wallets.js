@@ -48,8 +48,34 @@ export async function readPasswordByPhoneNumber(phone_number) {
     return rows[0].password
 }
 
+export async function readBalanceByPhoneNumber(phone_number) {
+
+    const sql =  `
+    select balance from wallets 
+    where phone_number = ${phone_number}
+    `
+
+    const [rows] = await pool.execute(sql)
+
+    return rows[0].balance
+}
+
 
 ////////////////// update ///////////////////////
+
+export async function updateBalanceByPhoneNumber(phone_number,balance) {
+
+    const sql =  `
+    update wallets 
+    set balance = ${balance}
+    where phone_number = ${phone_number}
+    `
+
+    const snap = await pool.execute(sql)
+
+    return true
+}
+
 ////////////////// delete ///////////////////////
 ////////////////// check ///////////////////////
 
@@ -78,4 +104,22 @@ export async function checkTheLimitsOfTheNationalId(national_ID) {
 
     if (rows.length > 2) return true
     else return false
+}
+
+
+////////////////// math ///////////////////////
+
+export async function mathTotalTransferForTheDay(phone_number) {
+
+    const sql =  `
+    SELECT SUM(amount) AS total_amount 
+    FROM transactions 
+    WHERE DATE(created_at) = CURDATE()
+    AND wallets_phone_number = ${phone_number}
+    AND transaction_type = 'transfer'
+    `
+
+    const [rows] = await pool.execute(sql)
+
+    return rows[0].total_amount
 }
