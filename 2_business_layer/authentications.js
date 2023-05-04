@@ -63,7 +63,7 @@ app.post('/signup',async (req,res)=>{
             date_of_birth
         })
 
-        const token =  jwt.sign({wallet: phone_number}, process.env.secret, { expiresIn: '24h' })
+        const token =  jwt.sign({wallet: phone_number}, process.env.secret, { expiresIn: process.env.token_time })
 
         return res.json({
             masseage: 'successfully registered',
@@ -115,7 +115,7 @@ app.post('/signin',async (req,res)=>{
             return res.status(500).send('The verification code is invalid')
 
 
-        const token =  jwt.sign({wallet: phone_number}, process.env.secret, { expiresIn: '24h' })
+        const token =  jwt.sign({wallet: phone_number}, process.env.secret, { expiresIn: process.env.token_time })
 
         return res.json({
             masseage: 'done',
