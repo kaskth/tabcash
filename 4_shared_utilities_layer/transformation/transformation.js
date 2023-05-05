@@ -1,4 +1,4 @@
-import {updateBalanceByPhoneNumber,readBalanceByPhoneNumber} from "../../6_data_layer/wallets.js";
+import {updateBalanceByPhoneNumber,readBalanceByPhoneNumber,readIdByPhoneNumber} from "../../6_data_layer/wallets.js";
 import {createTransaction} from "../../6_data_layer/transactions.js";
 
 
@@ -15,6 +15,7 @@ export async function transferToWallet(sender,receiver,amount) {
     await updateBalanceByPhoneNumber(receiver,new_receiver_balance.toFixed(2))
 
     await createTransaction({
+        wallets_id: await readIdByPhoneNumber(sender),
         wallets_phone_number:sender,
         company_name: null,
         description: null,

@@ -19,6 +19,7 @@ const pool = mysql.createPool({
 export async function createTransaction(data=Object) {
 
     const wallets_phone_number = data.wallets_phone_number
+    const wallets_id  = data.wallets_id
     const company_name = data.company_name || null
     const description = data.description || null
     const user_type = data.user_type || 'main'
@@ -29,8 +30,8 @@ export async function createTransaction(data=Object) {
     const status = data.status
 
     const sql = `
-    insert into transactions (wallets_phone_number,company_name,description,user_type,transaction_type,sender_phone_number ,receiver_phone_number,amount,status)
-    values ('${wallets_phone_number}','${company_name}','${description}','${user_type}','${transaction_type}','${sender_phone_number}','${receiver_phone_number}','${amount}','${status}')
+    insert into transactions (wallets_phone_number,wallets_id ,company_name,description,user_type,transaction_type,sender_phone_number ,receiver_phone_number,amount,status)
+    values ('${wallets_phone_number}',${wallets_id},'${company_name}','${description}','${user_type}','${transaction_type}','${sender_phone_number}','${receiver_phone_number}','${amount}','${status}')
     `
 
     const snap = await pool.execute(sql)

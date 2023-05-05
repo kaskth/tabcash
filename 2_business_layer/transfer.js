@@ -76,7 +76,7 @@ app.patch('/to-wallet',async (req,res)=>{
 
         return res.send('operation accomplished successfully')
     }catch (e) {
-        return res.status(500).send('Something went wrong')
+        return res.status(500).send(e)
     }
 
 
