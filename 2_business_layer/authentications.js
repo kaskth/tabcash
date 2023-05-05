@@ -20,7 +20,7 @@ app.post('/signup',async (req,res)=>{
     const validation_code = req.body.validation_code
 
     if (!phone_number||!first_name||!last_name||!password||!national_ID||!expiration_date||!date_of_birth||!validation_code)
-        return res.status(500).send('Missing data')
+        return res.status(500).json({message:'Missing data'})
 
     const phone_number_regex  = /^01[0-2|5]{1}[0-9]{8}$/.test(phone_number)
     const first_name_regex  = /^[a-zA-Z]+$/.test(first_name)
@@ -41,14 +41,14 @@ app.post('/signup',async (req,res)=>{
         !expiration_date_regex||
         !date_of_birth_regex||
         !validation_code_regex
-    ) return res.status(500).send('Check the imposed patterns')
+    ) return res.status(500).json({message:'Check the imposed patterns'})
 
     try {
-        if (await checkForAPhoneNumber(phone_number)) return res.status(500).send('The phone number has already been used')
+        if (await checkForAPhoneNumber(phone_number)) return res.status(500).json({message:'The phone number has already been used'})
 
-        if (await checkTheLimitsOfTheNationalId(national_ID)) return res.status(500).send('We do not allow the use of the national number more than three times')
+        if (await checkTheLimitsOfTheNationalId(national_ID)) return res.status(500).json({message:'We do not allow the use of the national number more than three times'})
 
-        // if (await verificationChecks(phone_number,validation_code)) return res.status(500).send('The verification code is invalid')
+        // if (await verificationChecks(phone_number,validation_code)) return res.status(500).json({message:'The verification code is invalid'})
 
         const passHash = await bcrypt.hash(password,10)
 
@@ -73,7 +73,7 @@ app.post('/signup',async (req,res)=>{
         })
     }
     catch (e) {
-        return res.send('Something went wrong')
+        return res.json({message:'Something went wrong'})
     }
 
 })

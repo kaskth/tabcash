@@ -26,7 +26,7 @@ export async function createWallet(data=Object){
     const date_of_birth  = data.date_of_birth
 
     const sql = `insert into wallets (phone_number,first_name,last_name,password,national_ID,expiration_date,verification,date_of_birth) 
-    VALUES ('${phone_number}','${first_name}','${last_name}','${password}',${national_ID},'${expiration_date}',${verification},'${date_of_birth}')
+    VALUES ('${phone_number}','${first_name}','${last_name}','${password}','${national_ID}','${expiration_date}',${verification},'${date_of_birth}')
 `
 
     const [rows, fields] = await pool.query(sql)

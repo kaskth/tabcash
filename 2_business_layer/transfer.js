@@ -20,7 +20,7 @@ app.patch('/to-wallet',async (req,res)=>{
     try {
         user = await jwt.verify(token,process.env.secret)
     }catch (e) {
-        return res.status(500).send('Please login')
+        return res.status(500).json({message:'Please login'})
     }
 
     // check data
@@ -28,7 +28,7 @@ app.patch('/to-wallet',async (req,res)=>{
     const receiver = req.body.receiver
     const password = req.body.password
 
-    if (!amount||!receiver||!password) return res.status(500).send('Missing data')
+    if (!amount||!receiver||!password) return res.status(500).json({message:'Missing data'})
 
     // check data pattern
     const amout_regex = /^[1-9]\d*$/.test(amount)
@@ -39,17 +39,17 @@ app.patch('/to-wallet',async (req,res)=>{
         !amout_regex||
         !receiver_regex||
         !password_regex
-    ) return res.status(500).send('Invalid style')
+    ) return res.status(500).json({message:'Invalid style'})
 
     try {
 
         // check user
         if (!await checkForAPhoneNumber(user.wallet) && !await checkForAPhoneNumber(receiver))
-            return res.status(500).send('User not found')
+            return res.status(500).json({message:'User not found'})
 
         // check password
         if (!await bcrypt.compare(password,await readPasswordByPhoneNumber(user.wallet)))
-            return res.status(500).send('Error password')
+            return res.status(500).json({message:'Error password'})
 
         // Check transaction laws
         amount = parseInt(amount)
@@ -57,9 +57,9 @@ app.patch('/to-wallet',async (req,res)=>{
         const receiver_balance = parseInt(await readBalanceByPhoneNumber(receiver))
 
         if (amount < process.env.jordanian_daily_transfer_limit && amount > process.env.maximum_daily_transfer_limit)
-            return res.status(500).send('Invalid transaction')
-        if (sender_balance < amount) return res.status(500).send('Make sure you have enough balance')
-        if ((receiver_balance + amount) > process.env.wallet_limit) return res.status(500).send('Invalid transaction')
+            return res.status(500).json({message:'Invalid transaction'})
+        if (sender_balance < amount) return res.status(500).json({message:'Make sure you have enough balance'})
+        if ((receiver_balance + amount) > process.env.wallet_limit) return res.status(500).json({message:'Invalid transaction'})
 
         // Check daily transactions
         const total_amount = await mathTotalTransferForTheDay(user.wallet)
@@ -74,9 +74,9 @@ app.patch('/to-wallet',async (req,res)=>{
         // transfer
         await transferToWallet(user.wallet,receiver,amount)
 
-        return res.send('operation accomplished successfully')
+        return res.json({message:'operation accomplished successfully'})
     }catch (e) {
-        return res.status(500).send(e)
+        return res.status(500).json({message:'Something went wrong'})
     }
 
 
