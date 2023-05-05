@@ -1,5 +1,5 @@
 import express from "express";
-import {checkForAPhoneNumber,checkTheLimitsOfTheNationalId,createWallet,readPasswordByPhoneNumber} from "../6_data_layer/wallets.js";
+import {checkForAPhoneNumber,checkTheLimitsOfTheNationalId,createWallet,readPasswordByPhoneNumber,readDataUserByPhoneNumber} from "../6_data_layer/wallets.js";
 import {verificationChecks} from "../4_shared_utilities_layer/twilio/sendVerificationCode.js";
 import bcrypt from "bcrypt";
 import jwt from 'jsonwebtoken';
@@ -48,7 +48,7 @@ app.post('/signup',async (req,res)=>{
 
         if (await checkTheLimitsOfTheNationalId(national_ID)) return res.status(500).send('We do not allow the use of the national number more than three times')
 
-        if (await verificationChecks(phone_number,validation_code)) return res.status(500).send('The verification code is invalid')
+        // if (await verificationChecks(phone_number,validation_code)) return res.status(500).send('The verification code is invalid')
 
         const passHash = await bcrypt.hash(password,10)
 
@@ -67,7 +67,9 @@ app.post('/signup',async (req,res)=>{
 
         return res.json({
             masseage: 'successfully registered',
-            token
+            token,
+            user: await readDataUserByPhoneNumber(phone_number),
+            status: true
         })
     }
     catch (e) {
@@ -111,15 +113,18 @@ app.post('/signin',async (req,res)=>{
             return res.status(500).send('Please check the information')
 
 
-        if (await verificationChecks(phone_number,validation_code))
-            return res.status(500).send('The verification code is invalid')
+
+        // if (await verificationChecks(phone_number,validation_code))
+        //     return res.status(500).send('The verification code is invalid')
 
 
         const token =  jwt.sign({wallet: phone_number}, process.env.secret, { expiresIn: process.env.token_time })
 
         return res.json({
-            masseage: 'done',
-            token
+            masseage: 'successfully',
+            token,
+            user: await readDataUserByPhoneNumber(phone_number),
+            status: true
         })
     }
     catch (e) {

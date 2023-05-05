@@ -17,7 +17,7 @@ app.post('/sms-verification',async (req,res)=>{
     if (!phone_number_regex) return res.status(500).send('Error in number pattern')
 
     try {
-        await sendVerificationCode(phone_number)
+        // await sendVerificationCode(phone_number)
 
         res.send('Verification message has been sent successfully')
     }
