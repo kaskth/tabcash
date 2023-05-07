@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import {readIdByPhoneNumber,checkForAPhoneNumber} from "../6_data_layer/wallets.js";
 import {checkChildForAPhoneNumber,createChild} from "../6_data_layer/childs.js";
-import {transferMainToChild} from "../4_shared_utilities_layer/transformation/transformation.js";
+import {transferMainToChild} from "../4_shared_utilities_layer/transformation.js";
 dotenv.config()
 
 const app = express.Router()

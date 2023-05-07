@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
 import {checkForAPhoneNumber,readPasswordByPhoneNumber,readBalanceByPhoneNumber,mathTotalTransferForTheDay} from "../6_data_layer/wallets.js";
-import {transferToWallet} from "../4_shared_utilities_layer/transformation/transformation.js";
+import {transferToWallet} from "../4_shared_utilities_layer/transformation.js";
 
 const app = express.Router()
 dotenv.config()

@@ -1,5 +1,5 @@
 import express from "express";
-import {sendVerificationCode} from "../4_shared_utilities_layer/twilio/sendVerificationCode.js";
+import {sendVerificationCode} from "../3_service_layer/twilio/sendVerificationCode.js";
 
 const app = express.Router()
 

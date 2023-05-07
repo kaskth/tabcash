@@ -1,6 +1,6 @@
-import {updateBalanceByPhoneNumber,readBalanceByPhoneNumber,readIdByPhoneNumber} from "../../6_data_layer/wallets.js";
-import {createTransaction} from "../../6_data_layer/transactions.js";
-import {readBalanceChildByPhoneNumber,readExpenseChildByPhoneNumber,updateExpenseChildByPhoneNumber,updateBalanceChildByPhoneNumber} from "../../6_data_layer/childs.js";
+import {updateBalanceByPhoneNumber,readBalanceByPhoneNumber,readIdByPhoneNumber} from "../6_data_layer/wallets.js";
+import {createTransaction} from "../6_data_layer/transactions.js";
+import {readBalanceChildByPhoneNumber,readExpenseChildByPhoneNumber,updateExpenseChildByPhoneNumber,updateBalanceChildByPhoneNumber} from "../6_data_layer/childs.js";
 
 
 
@@ -66,4 +66,50 @@ export async function transferMainToChild(main,child,amount) {
         status,
     })
 
+}
+
+
+
+export async function deposit(wallet_phone_number,amount) {
+
+    const balance = await readBalanceByPhoneNumber(wallet_phone_number)
+    const new_balance = parseInt(balance) + parseInt(amount)
+
+    await updateBalanceByPhoneNumber(wallet_phone_number,new_balance)
+
+    await createTransaction({
+        wallets_phone_number: wallet_phone_number,
+        wallets_id:await readIdByPhoneNumber(wallet_phone_number),
+        description: "Deposit balance in the wallet",
+        transaction_type:"deposit",
+        sender_phone_number:"credit card",
+        receiver_phone_number:wallet_phone_number,
+        amount,
+        status:"success",
+    })
+
+    return new_balance
+}
+
+
+
+export async function withdrawal(wallet_phone_number,amount,bank_account_number) {
+
+    const balance = await readBalanceByPhoneNumber(wallet_phone_number)
+    const new_balance = parseInt(balance) - parseInt(amount)
+
+    await updateBalanceByPhoneNumber(wallet_phone_number,new_balance)
+
+    await createTransaction({
+        wallets_phone_number: wallet_phone_number,
+        wallets_id:await readIdByPhoneNumber(wallet_phone_number),
+        description: "Withdraw balance in the wallet",
+        transaction_type:"withdrawal",
+        sender_phone_number:"wallet",
+        receiver_phone_number: `***********${bank_account_number.slice(-3)}`,
+        amount,
+        status:"success",
+    })
+
+    return new_balance
 }

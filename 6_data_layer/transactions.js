@@ -20,8 +20,8 @@ export async function createTransaction(data=Object) {
 
     const wallets_phone_number = data.wallets_phone_number
     const wallets_id  = data.wallets_id
-    const company_name = data.company_name || null
-    const description = data.description || null
+    const company_name = data.company_name || 'Tab Cash'
+    const description = data.description || 'Transaction'
     const user_type = data.user_type || 'main'
     const transaction_type = data.transaction_type || 'transfer'
     const sender_phone_number = data.sender_phone_number

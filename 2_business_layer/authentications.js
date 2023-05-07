@@ -1,6 +1,6 @@
 import express from "express";
 import {checkForAPhoneNumber,checkTheLimitsOfTheNationalId,createWallet,readPasswordByPhoneNumber,readDataUserByPhoneNumber} from "../6_data_layer/wallets.js";
-import {verificationChecks} from "../4_shared_utilities_layer/twilio/sendVerificationCode.js";
+import {verificationChecks} from "../3_service_layer/twilio/sendVerificationCode.js";
 import bcrypt from "bcrypt";
 import jwt from 'jsonwebtoken';
 
@@ -84,13 +84,13 @@ app.post('/signup',async (req,res)=>{
 app.post('/signin',async (req,res)=>{
 
 
-    if (req.headers.authorization) return res.status(500).send('There is already a session')
+    if (req.headers.authorization) return res.status(500).json({message: 'There is already a session'})
 
     const phone_number = req.body.phone_number
     const password = req.body.password
     const validation_code = req.body.validation_code
 
-    if (!phone_number||!password||!validation_code) return res.status(500).send('Missing data')
+    if (!phone_number||!password||!validation_code) return res.status(500).json({message: 'Missing data'})
 
     const phone_number_regex  = /^01[0-2|5]{1}[0-9]{8}$/.test(phone_number)
     const password_regex  = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(password)
@@ -100,22 +100,21 @@ app.post('/signin',async (req,res)=>{
         !phone_number_regex||
         !password_regex||
         !validation_code_regex
-    ) return res.status(500).send('Invalid style')
+    ) return res.status(500).json({message: 'Invalid style'})
 
 
     try {
         if (!await checkForAPhoneNumber(phone_number))
-            return res.status(500).send('Unregistered user')
+            return res.status(500).json({message: 'Unregistered user'})
 
         const password_hash = await readPasswordByPhoneNumber(phone_number)
 
         if (!await bcrypt.compare(password,password_hash))
-            return res.status(500).send('Please check the information')
-
+            return res.status(500).json({message: 'Please check the information'})
 
 
         if (await verificationChecks(phone_number,validation_code))
-            return res.status(500).send('The verification code is invalid')
+            return res.status(500).json({message: 'The verification code is invalid'})
 
 
         const token =  jwt.sign({wallet: phone_number}, process.env.secret, { expiresIn: process.env.token_time })
@@ -128,7 +127,7 @@ app.post('/signin',async (req,res)=>{
         })
     }
     catch (e) {
-        return res.status(500).send("Something went wrong")
+        return res.status(500).send({message: "Something went wrong"})
     }
 
 })
