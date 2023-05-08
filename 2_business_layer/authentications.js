@@ -79,7 +79,7 @@ app.post('/signup',async (req,res)=>{
         const token =  jwt.sign({wallet: phone_number}, process.env.secret, { expiresIn: process.env.token_time })
 
         return res.json({
-            masseage: 'successfully registered',
+            message: 'successfully registered',
             token,
             user: await readDataUserByPhoneNumber(phone_number),
             creditCard,
@@ -134,7 +134,7 @@ app.post('/signin',async (req,res)=>{
         const token =  jwt.sign({wallet: phone_number}, process.env.secret, { expiresIn: process.env.token_time })
 
         return res.json({
-            masseage: 'successfully',
+            message: 'successfully',
             token,
             user: await readDataUserByPhoneNumber(phone_number),
             status: true

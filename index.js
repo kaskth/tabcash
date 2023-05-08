@@ -13,11 +13,21 @@ import orders from "./2_business_layer/payment gateway/orders.js";
 
 const app = express()
 
+app.use(cors({
+    origin: [
+        'http://localhost:8080',
+        'http://localhost:8081',
+        'http://localhost:8082',
+        'https://tabcash-18f8b.web.app/',
+        '*'
+    ],
+    credentials: true,
+    exposedHeaders: ['set-cookie']
+}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cors({
-    origin: '*'
-}));
+
+
 
 app.use('/messaging',messaging)
 app.use('/authentications',authentications)
