@@ -7,6 +7,9 @@ import transfer from "./2_business_layer/transfer.js";
 import childs from "./2_business_layer/childs.js";
 import deposit from "./2_business_layer/deposit.js";
 import withdrawal from "./2_business_layer/withdrawal.js";
+import applications from "./2_business_layer/payment gateway/applications.js";
+import oauth2 from "./2_business_layer/payment gateway/oauth2.js";
+import orders from "./2_business_layer/payment gateway/orders.js";
 
 const app = express()
 
@@ -16,10 +19,13 @@ app.use(cors())
 
 app.use('/messaging',messaging)
 app.use('/authentications',authentications)
-app.use('/transfer',transfer)
-app.use('/transfer',deposit)
-app.use('/transfer',withdrawal)
+app.use('/transactions',transfer)
+app.use('/transactions',deposit)
+app.use('/transactions',withdrawal)
 app.use('/childs',childs)
+app.use('/gateway/application',applications)
+app.use('/gateway/oauth2',oauth2)
+app.use('/gateway/orders',orders)
 
 app.listen(8080,()=>{
     console.log('port: 8080')

@@ -8,3 +8,60 @@ const pool = mysql.createPool({
     user: process.env.user,
     password: process.env.password
 })
+
+
+
+
+//////////// create ////////////////////
+
+export async function createCreditCards(data=Object) {
+
+    const card_holder_name = data.card_holder_name
+    const card_number = data.card_number
+    const expiration = data.expiration
+    const cvv = data.cvv
+    const wallets_id = data.wallets_id
+    const wallets_phone_number = data.wallets_phone_number
+
+    const sql = `
+    insert into creditcards (card_holder_name,card_number,expiration,cvv,wallets_id,wallets_phone_number)
+    values ('${card_holder_name}','${card_number}','${expiration}','${cvv}',${wallets_id},'${wallets_phone_number}')
+    `
+    const span = await pool.execute(sql)
+
+    return true
+
+}
+
+
+//////////// read ////////////////////
+
+
+export async function readCreditCardsByPhoneNumber(wallets_phone_number ) {
+
+    const sql =  `
+    select * from creditcards 
+    where wallets_phone_number  = ${wallets_phone_number}
+    `
+
+    const [rows] = await pool.execute(sql)
+
+    return rows[0]
+}
+
+export async function readBalanceCreditCardsByPhoneNumber(wallets_phone_number ) {
+
+    const sql =  `
+    select balance from creditcards 
+    where wallets_phone_number  = ${wallets_phone_number}
+    `
+
+    const [rows] = await pool.execute(sql)
+
+    return rows[0].balance
+}
+
+//////////// update ////////////////////
+//////////// delete ////////////////////
+//////////// check ////////////////////
+//////////// math ////////////////////

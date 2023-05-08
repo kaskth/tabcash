@@ -3,6 +3,8 @@ import {checkForAPhoneNumber,checkTheLimitsOfTheNationalId,createWallet,readPass
 import {verificationChecks} from "../3_service_layer/twilio/sendVerificationCode.js";
 import bcrypt from "bcrypt";
 import jwt from 'jsonwebtoken';
+import {createCreditCards} from "../6_data_layer/creditcards.js";
+import generateCreditCard from "../4_shared_utilities_layer/generateCreditCard.js";
 
 const app = express.Router()
 
@@ -48,11 +50,11 @@ app.post('/signup',async (req,res)=>{
 
         if (await checkTheLimitsOfTheNationalId(national_ID)) return res.status(500).json({message:'We do not allow the use of the national number more than three times'})
 
-        if (await verificationChecks(phone_number,validation_code)) return res.status(500).json({message:'The verification code is invalid'})
+        // if (await verificationChecks(phone_number,validation_code)) return res.status(500).json({message:'The verification code is invalid'})
 
         const passHash = await bcrypt.hash(password,10)
 
-        await createWallet({
+        const wallat = await createWallet({
             phone_number,
             first_name,
             last_name,
@@ -63,17 +65,29 @@ app.post('/signup',async (req,res)=>{
             date_of_birth
         })
 
+        const creditCard = await generateCreditCard()
+
+        await createCreditCards({
+            card_holder_name: `${first_name.toUpperCase()} ${last_name.toUpperCase()}`,
+            card_number: creditCard.number,
+            expiration:creditCard.expiration,
+            cvv: creditCard.cvv,
+            wallets_id: wallat.insertId,
+            wallets_phone_number: phone_number
+        })
+
         const token =  jwt.sign({wallet: phone_number}, process.env.secret, { expiresIn: process.env.token_time })
 
         return res.json({
             masseage: 'successfully registered',
             token,
             user: await readDataUserByPhoneNumber(phone_number),
+            creditCard,
             status: true
         })
     }
     catch (e) {
-        return res.json({message:'Something went wrong'})
+        return res.send(e)
     }
 
 })

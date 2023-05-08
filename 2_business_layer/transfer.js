@@ -11,7 +11,7 @@ dotenv.config()
 
 
 
-app.patch('/to-wallet',async (req,res)=>{
+app.patch('/transfer/to-wallet',async (req,res)=>{
 
     // check session
     const token = req.headers.authorization

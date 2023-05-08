@@ -78,7 +78,7 @@ app.post('/create',async (req,res)=>{
     ) return res.status(500).json({message:'Invalid style'})
 
     // Check data categories
-    const all_category = ['Toys','Books','Games','Sports equipment','Arts and Crafts','Musical instruments','Science kits','Board games','Puzzles','Building sets','Dolls','Action figures','Outdoor toys','Video games','Educational toys','Pretend play','Remote control toys','Dress-up','Trains and train sets','Construction toys','Bikes','Scooters','Skateboards','Swimming gear','Outdoor play equipment','Legos','Play kitchen','Teddy bears','Stuffed animals','Food','Electronics','Home appliances','Musical equipment','Cameras','Beauty products','Jewelry','Clothing','Shoes','Furniture','Home decor','Kitchenware','Pet supplies','Stationery','Art supplies','Fitness equipment','Sports memorabilia','Collectibles','Antiques','Board games','Gardening tools','Camping gear','Tools','Travel accessories','Musical recordings','Watches']
+    const all_category = ["Clothes and Fashion", "Electronics", "Furniture, Home and Decoration", "Beauty and Personal Care", "Household Tools and Equipment", "Games and Electronic Games", "Books and Publications", "Sports and Fitness", "Jewelry and Watches", "Food and Drinks", "Health and Wellness", "Games and Hobbies", "Travel and Tourism", "Pets and Their Supplies", "Gifts and Special Occasions"]
 
     const isSame = category.every(value => all_category.includes(value))
 

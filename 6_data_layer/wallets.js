@@ -29,9 +29,9 @@ export async function createWallet(data=Object){
     VALUES ('${phone_number}','${first_name}','${last_name}','${password}','${national_ID}','${expiration_date}',${verification},'${date_of_birth}')
 `
 
-    const [rows, fields] = await pool.query(sql)
+    const [rows] = await pool.execute(sql)
 
-    return true
+    return rows
 }
 
 ////////////////// read ///////////////////////
