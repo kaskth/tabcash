@@ -25,8 +25,8 @@ app.post('/signup',async (req,res)=>{
         return res.status(500).json({message:'Missing data'})
 
     const phone_number_regex  = /^01[0-2|5]{1}[0-9]{8}$/.test(phone_number)
-    const first_name_regex  = /^[a-zA-Z]+$/.test(first_name)
-    const last_name_regex  = /^[a-zA-Z]+$/.test(last_name)
+    const first_name_regex  = /^[a-zA-Z]{3,45}$/.test(first_name)
+    const last_name_regex  = /^[a-zA-Z]{3,45}$/.test(last_name)
     const password_regex  = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(password)
     const national_ID_regex  = /^[0-9]{14}$/.test(national_ID)
     const expiration_date_regex  = /^(\d{4})-(\d{2})-(\d{2})$/.test(expiration_date)
@@ -127,8 +127,8 @@ app.post('/signin',async (req,res)=>{
             return res.status(500).json({message: 'Please check the information'})
 
 
-        if (await verificationChecks(phone_number,validation_code))
-            return res.status(500).json({message: 'The verification code is invalid'})
+        // if (await verificationChecks(phone_number,validation_code))
+        //     return res.status(500).json({message: 'The verification code is invalid'})
 
 
         const token =  jwt.sign({wallet: phone_number}, process.env.secret, { expiresIn: process.env.token_time })
