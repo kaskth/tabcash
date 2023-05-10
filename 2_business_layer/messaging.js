@@ -18,7 +18,9 @@ app.post('/sms-verification',async (req,res)=>{
     if (!phone_number_regex) return res.status(500).json({message:'Error in number pattern'})
 
     try {
-        await sendVerificationCode(phone_number)
+        if (parseInt(process.env.verificationCode)){
+            await sendVerificationCode(phone_number)
+        }
 
         res.json({message:'Verification message has been sent successfully'})
     }
@@ -45,7 +47,9 @@ app.post('/sms-verification-v2',async (req,res)=>{
 
 
     try {
-        await sendVerificationCode(phone_number)
+        if (parseInt(process.env.verificationCode)){
+            await sendVerificationCode(phone_number)
+        }
 
         res.json({message:'Verification message has been sent successfully'})
     }
