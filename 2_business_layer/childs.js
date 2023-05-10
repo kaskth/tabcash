@@ -31,7 +31,7 @@ app.post('/create',async (req,res)=>{
     const age = req.body.age
     const expense = req.body.expense
     const type = req.body.type
-    const next_batch_date = req.body.next_batch_date
+    // const next_batch_date = req.body.next_batch_date
     const wallets_id = await readIdByPhoneNumber(user.wallet)
     const wallets_phone_number = user.wallet
     const category = req.body.category
@@ -44,7 +44,7 @@ app.post('/create',async (req,res)=>{
         !age||
         !expense||
         !type||
-        !next_batch_date||
+        // !next_batch_date||
         !wallets_id||
         !wallets_phone_number||
         !category
@@ -58,7 +58,7 @@ app.post('/create',async (req,res)=>{
     const age_regex = /^1[0-6]$/.test(age)
     const expense_regex = /^[1-9]\d*$/.test(expense)
     const type_regex = /^(daily|weekly|monthly|none)$/.test(type)
-    const next_batch_date_regex = /^(\d{4})-(\d{2})-(\d{2})$/.test(next_batch_date)
+    // const next_batch_date_regex = /^(\d{4})-(\d{2})-(\d{2})$/.test(next_batch_date)
     const wallets_id_regex = /\b\d+\b/.test(wallets_id)
     const wallets_phone_number_regex = /^01[0-2|5]{1}[0-9]{8}$/.test(wallets_phone_number)
     const category_regex = Array.isArray(category)
@@ -71,7 +71,7 @@ app.post('/create',async (req,res)=>{
         !age_regex||
         !expense_regex||
         !type_regex||
-        !next_batch_date_regex||
+        // !next_batch_date_regex||
         !wallets_id_regex||
         !wallets_phone_number_regex||
         !category_regex
@@ -107,7 +107,7 @@ app.post('/create',async (req,res)=>{
             password: await bcrypt.hash(password,10),
             age,
             type,
-            next_batch_date,
+            // next_batch_date,
             wallets_id,
             wallets_phone_number,
             category

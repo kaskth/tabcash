@@ -84,6 +84,18 @@ export async function readDataUserByPhoneNumber(phone_number) {
     return rows[0]
 }
 
+export async function readDataUserByPhoneNumberV2(phone_number) {
+
+    const sql =  `
+    select id,phone_number,first_name,last_name,national_ID,balance from wallets 
+    where phone_number = ${phone_number}
+    `
+
+    const [rows] = await pool.execute(sql)
+
+    return rows[0]
+}
+
 ////////////////// update ///////////////////////
 
 export async function updateBalanceByPhoneNumber(phone_number,balance) {

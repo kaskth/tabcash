@@ -41,6 +41,49 @@ export async function createTransaction(data=Object) {
 
 
 ///////////////// read //////////////////////
+
+export async function readDataTransactionsByPhoneNumber(wallets_phone_number) {
+
+    const sql =  `
+    select description,amount,created_at as date,transaction_type as type from transactions 
+    where wallets_phone_number = ${wallets_phone_number}
+    `
+
+    const [rows] = await pool.execute(sql)
+
+    return rows
+}
+
+
 ///////////////// update //////////////////////
 ///////////////// delete //////////////////////
 ///////////////// chack //////////////////////
+///////////////// math //////////////////////
+export async function mathTotalTransferForTheDay(phone_number) {
+
+    const sql =  `
+    SELECT SUM(amount) AS total_amount 
+    FROM transactions 
+    WHERE DATE(created_at) = CURDATE()
+    AND wallets_phone_number = ${phone_number}
+    AND transaction_type = 'transfer'
+    `
+
+    const [rows] = await pool.execute(sql)
+
+    return rows[0].total_amount
+}
+
+
+export async function mathTotalTransfer(phone_number) {
+
+    const sql =  `
+    SELECT SUM(amount) AS total_amount 
+    FROM transactions 
+    WHERE wallets_phone_number = ${phone_number}
+    `
+
+    const [rows] = await pool.execute(sql)
+
+    return rows[0].total_amount
+}

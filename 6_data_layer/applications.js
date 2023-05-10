@@ -39,7 +39,7 @@ export async function createApplication(data=Object) {
 export async function readAllApplicationByWalletPhoneNumber(wallets_phone_number) {
 
     const sql =  `
-    select name,client_id,client_secret from applications 
+    select name,client_id,client_secret,created_at from applications 
     where wallets_phone_number = ${wallets_phone_number}
     `
     const [rows] = await pool.execute(sql)

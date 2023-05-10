@@ -23,7 +23,7 @@ export async function createChild(data=Object) {
     const balance = data.balance || 0.00
     const expense = data.expense || 0.00
     const type = data.type
-    const next_batch_date = data.next_batch_date
+    const next_batch_date = data.next_batch_date || null
     const wallets_id  = data.wallets_id
     const wallets_phone_number  = data.wallets_phone_number
     const category  = data.category
@@ -65,6 +65,19 @@ export async function readExpenseChildByPhoneNumber(phone_number) {
     const [rows] = await pool.execute(sql)
 
     return rows[0].expense
+}
+
+
+export async function readDataChildsByPhoneNumber(wallets_phone_number) {
+
+    const sql =  `
+    select phone_number,first_name,last_name,age,expense as balance,type from childs 
+    where wallets_phone_number = ${wallets_phone_number}
+    `
+
+    const [rows] = await pool.execute(sql)
+
+    return rows
 }
 
 
