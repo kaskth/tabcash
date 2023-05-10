@@ -23,7 +23,7 @@ app.post('/sms-verification',async (req,res)=>{
         res.json({message:'Verification message has been sent successfully'})
     }
     catch (e) {
-        return res.status(500).json({message:'Something went wrong'})
+        return res.status(500).json({message:e})
     }
 
 })
