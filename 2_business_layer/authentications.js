@@ -50,7 +50,7 @@ app.post('/signup',async (req,res)=>{
 
         if (await checkTheLimitsOfTheNationalId(national_ID)) return res.status(500).json({message:'We do not allow the use of the national number more than three times'})
 
-        // if (await verificationChecks(phone_number,validation_code)) return res.status(500).json({message:'The verification code is invalid'})
+        if (await verificationChecks(phone_number,validation_code)) return res.status(500).json({message:'The verification code is invalid'})
 
         const passHash = await bcrypt.hash(password,10)
 
@@ -127,8 +127,8 @@ app.post('/signin',async (req,res)=>{
             return res.status(500).json({message: 'Please check the information'})
 
 
-        // if (await verificationChecks(phone_number,validation_code))
-        //     return res.status(500).json({message: 'The verification code is invalid'})
+        if (await verificationChecks(phone_number,validation_code))
+            return res.status(500).json({message: 'The verification code is invalid'})
 
 
         const token =  jwt.sign({wallet: phone_number}, process.env.secret, { expiresIn: process.env.token_time })
