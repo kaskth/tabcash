@@ -47,6 +47,7 @@ export async function readDataTransactionsByPhoneNumber(wallets_phone_number) {
     const sql =  `
     select description,amount,created_at as date,transaction_type as type from transactions 
     where wallets_phone_number = ${wallets_phone_number}
+    order by created_at DESC
     `
 
     const [rows] = await pool.execute(sql)
