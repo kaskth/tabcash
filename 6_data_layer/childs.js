@@ -73,6 +73,7 @@ export async function readDataChildsByPhoneNumber(wallets_phone_number) {
     const sql =  `
     select phone_number,first_name,last_name,age,expense as balance,type from childs 
     where wallets_phone_number = ${wallets_phone_number}
+    order by created_at DESC
     `
 
     const [rows] = await pool.execute(sql)

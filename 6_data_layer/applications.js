@@ -42,6 +42,7 @@ export async function readAllApplicationByWalletPhoneNumber(wallets_phone_number
     select name,client_id,client_secret,created_at from applications 
     where wallets_phone_number = ${wallets_phone_number}
     and enabled = 'true'
+    order by created_at DESC
     `
     const [rows] = await pool.execute(sql)
 
@@ -103,6 +104,7 @@ export async function checkTheLimitsOfTheApplication(wallets_phone_number) {
     const sql =  `
     select wallets_phone_number from applications 
     where wallets_phone_number = ${wallets_phone_number}
+    and enabled = 'true'
     `
     const [rows] = await pool.execute(sql)
 
