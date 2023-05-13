@@ -68,7 +68,7 @@ export async function deleteApplicationByName(wallets_phone_number,name) {
     const sql =  `
     DELETE FROM applications 
     WHERE wallets_phone_number = ${wallets_phone_number}
-    and name = ${name}
+    and name = '${name}'
     `
 
     const snap = await pool.execute(sql)
