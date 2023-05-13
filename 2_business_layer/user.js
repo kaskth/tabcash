@@ -11,7 +11,7 @@ const app = express.Router()
 
 
 
-app.get('/get-data',async (req,res)=>{
+app.get('/data',async (req,res)=>{
 
     // check session
     const token = req.headers.authorization
