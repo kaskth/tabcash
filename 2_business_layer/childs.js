@@ -191,7 +191,7 @@ app.patch('/update',async (req,res)=>{
 
 
 
-app.delete('/delete',async (req,res)=>{
+app.post('/delete',async (req,res)=>{
 
     // Verify the session
     const token = req.headers.authorization
