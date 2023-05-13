@@ -36,7 +36,8 @@ export async function transferToSmartCard(phone_number,amount) {
 
     const wallet_balance = await readBalanceByPhoneNumber(phone_number)
     const smartCard_balance = await readBalanceCreditCardsByPhoneNumber(phone_number)
-
+    console.log(wallet_balance)
+    console.log(smartCard_balance)
     const new_wallet_balance = parseInt(wallet_balance) - parseInt(amount)
     const new_smartCard_balance = parseInt(smartCard_balance) + parseInt(amount)
 
@@ -47,7 +48,7 @@ export async function transferToSmartCard(phone_number,amount) {
         wallets_id: await readIdByPhoneNumber(phone_number),
         wallets_phone_number:phone_number,
         company_name: null,
-        description: 'transferred to a smart card',
+        description: 'Transferred to a smart card',
         user_type:'main',
         transaction_type : 'transfer',
         sender_phone_number: 'my wallet',

@@ -114,14 +114,14 @@ export async function updateExpenseAndTypeChildByPhoneNumber(phone_number,wallet
     const sql =  `
     update childs 
     set expense = ${expense},
-    type = ${type}
+    type = '${type}'
     where phone_number = ${phone_number}
     and wallets_phone_number = ${wallets_phone_number}
     `
-
     const snap = await pool.execute(sql)
 
     return true
+
 }
 
 

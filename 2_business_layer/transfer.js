@@ -131,6 +131,7 @@ app.patch('/transfer/to-smartCard',async (req,res)=>{
 
 
         // Check daily transactions
+
         const total_amount = await mathTotalTransferForTheDay(user.wallet)
 
         if ((parseInt(total_amount) + amount) > process.env.maximum_daily_transfer_limit)

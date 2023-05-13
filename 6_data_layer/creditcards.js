@@ -49,13 +49,12 @@ export async function readCreditCardsByPhoneNumber(wallets_phone_number ) {
     return rows[0]
 }
 
-export async function readBalanceCreditCardsByPhoneNumber(wallets_phone_number ) {
+export async function readBalanceCreditCardsByPhoneNumber(wallets_phone_number) {
 
     const sql =  `
     select balance from creditcards 
-    where wallets_phone_number  = ${wallets_phone_number}
+    where wallets_phone_number = ${wallets_phone_number}
     `
-
     const [rows] = await pool.execute(sql)
 
     return rows[0].balance
