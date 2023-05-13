@@ -79,7 +79,6 @@ app.patch('/transfer/to-wallet',async (req,res)=>{
         return res.status(500).json({message:'Something went wrong'})
     }
 
-
 })
 
 
@@ -99,26 +98,23 @@ app.patch('/transfer/to-smartCard',async (req,res)=>{
 
     // check data
     let amount = req.body.amount
-    const receiver = req.body.receiver
     const password = req.body.password
 
-    if (!amount||!receiver||!password) return res.status(500).json({message:'Missing data'})
+    if (!amount||!password) return res.status(500).json({message:'Missing data'})
 
     // check data pattern
     const amout_regex = /^[1-9]\d*$/.test(amount)
-    const receiver_regex  = /^01[0-2|5]{1}[0-9]{8}$/.test(receiver)
     const password_regex  = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(password)
 
     if (
         !amout_regex||
-        !receiver_regex||
         !password_regex
     ) return res.status(500).json({message:'Invalid style'})
 
     try {
 
         // check user
-        if (!await checkForAPhoneNumber(user.wallet) && !await checkForAPhoneNumber(receiver))
+        if (!await checkForAPhoneNumber(user.wallet))
             return res.status(500).json({message:'User not found'})
 
         // check password
@@ -128,12 +124,11 @@ app.patch('/transfer/to-smartCard',async (req,res)=>{
         // Check transaction laws
         amount = parseInt(amount)
         const sender_balance = parseInt(await readBalanceByPhoneNumber(user.wallet))
-        const receiver_balance = parseInt(await readBalanceByPhoneNumber(receiver))
 
         if (amount < process.env.jordanian_daily_transfer_limit || amount > process.env.maximum_daily_transfer_limit)
             return res.status(500).json({message:'Invalid transaction'})
         if (sender_balance < amount) return res.status(500).json({message:'Make sure you have enough balance'})
-        if ((receiver_balance + amount) > process.env.wallet_limit) return res.status(500).json({message:'Invalid transaction'})
+
 
         // Check daily transactions
         const total_amount = await mathTotalTransferForTheDay(user.wallet)
