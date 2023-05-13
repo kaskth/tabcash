@@ -91,6 +91,20 @@ export async function updateOrderStatus(order_id,status) {
 }
 
 ///////////// delete /////////////////
+
+export async function deleteOrdersByPhoneNumber(wallet_phone_number,name) {
+
+    const sql =  `
+    DELETE FROM orders
+    WHERE wallet = ${wallet_phone_number}
+    and company_name = '${name}'
+    `
+    const snap = await pool.execute(sql)
+
+    return true
+}
+
+
 ///////////// check /////////////////
 
 export async function checkForAOrder(order_id,wallet) {

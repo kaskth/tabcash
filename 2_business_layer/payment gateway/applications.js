@@ -1,6 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
-import {checkTheLimitsOfTheApplication,createApplication,checkTheLimitsOfTheApplicationName,readAllApplicationByWalletPhoneNumber,deleteApplicationByName} from "../../6_data_layer/applications.js";
+import {checkTheLimitsOfTheApplication,createApplication,checkTheLimitsOfTheApplicationName,readAllApplicationByWalletPhoneNumber,updateEnabledByPhoneNumberAndName} from "../../6_data_layer/applications.js";
 import jwt from "jsonwebtoken";
 import {readPasswordByPhoneNumber,readIdByPhoneNumber} from "../../6_data_layer/wallets.js";
 import bcrypt from "bcrypt";
@@ -152,8 +152,9 @@ app.post('/delete',async (req,res)=>{
         if (!await bcrypt.compare(password,await readPasswordByPhoneNumber(user.wallet)))
             return res.status(500).json({message:'Error password'})
 
-        // delete
-        await deleteApplicationByName(user.wallet,app_name)
+
+        // Disabled app
+        await updateEnabledByPhoneNumberAndName(user.wallet,app_name,'false')
 
         // done
         res.send('done')

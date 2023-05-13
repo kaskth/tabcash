@@ -41,6 +41,7 @@ export async function readAllApplicationByWalletPhoneNumber(wallets_phone_number
     const sql =  `
     select name,client_id,client_secret,created_at from applications 
     where wallets_phone_number = ${wallets_phone_number}
+    and enabled = 'true'
     `
     const [rows] = await pool.execute(sql)
 
@@ -61,6 +62,21 @@ export async function readIdByPhoneNumberAndName(wallets_phone_number,name) {
 }
 
 /////////////////// update ////////////////////////
+
+export async function updateEnabledByPhoneNumberAndName(wallet_phone_number,name,val) {
+
+    const sql =  `
+    update applications 
+    set enabled = '${val}'
+    where wallets_phone_number = ${wallet_phone_number}
+    and name = '${name}'
+    `
+    const snap = await pool.execute(sql)
+
+    return true
+
+}
+
 /////////////////// delete ////////////////////////
 
 export async function deleteApplicationByName(wallets_phone_number,name) {
@@ -68,12 +84,16 @@ export async function deleteApplicationByName(wallets_phone_number,name) {
     const sql =  `
     DELETE FROM applications 
     WHERE wallets_phone_number = ${wallets_phone_number}
-    and name = ${name}
+    and name = '${name}'
     `
-
+try {
     const snap = await pool.execute(sql)
 
     return true
+}catch (e) {
+    console.log(e)
+}
+
 }
 
 /////////////////// check ////////////////////////
