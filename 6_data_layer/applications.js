@@ -62,6 +62,20 @@ export async function readIdByPhoneNumberAndName(wallets_phone_number,name) {
 
 /////////////////// update ////////////////////////
 /////////////////// delete ////////////////////////
+
+export async function deleteApplicationByName(wallets_phone_number,name) {
+
+    const sql =  `
+    DELETE FROM applications 
+    WHERE wallets_phone_number = ${wallets_phone_number}
+    and name = ${name}
+    `
+
+    const snap = await pool.execute(sql)
+
+    return true
+}
+
 /////////////////// check ////////////////////////
 
 export async function checkTheLimitsOfTheApplication(wallets_phone_number) {

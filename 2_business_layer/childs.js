@@ -2,8 +2,8 @@ import express from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-import {readIdByPhoneNumber,checkForAPhoneNumber} from "../6_data_layer/wallets.js";
-import {checkChildForAPhoneNumber,createChild} from "../6_data_layer/childs.js";
+import {readIdByPhoneNumber, checkForAPhoneNumber, readPasswordByPhoneNumber} from "../6_data_layer/wallets.js";
+import {checkChildForAPhoneNumber,createChild,deleteChildByPhoneNumber,updateExpenseAndTypeChildByPhoneNumber} from "../6_data_layer/childs.js";
 import {transferMainToChild} from "../4_shared_utilities_layer/transformation.js";
 dotenv.config()
 
@@ -129,7 +129,118 @@ app.post('/create',async (req,res)=>{
 
 
 
+app.patch('/update',async (req,res)=>{
 
+    // Verify the session
+    const token = req.headers.authorization
+    let user ;
+
+    try {
+        user = await jwt.verify(token,process.env.secret)
+    }catch (e) {
+        return res.status(500).json({message:'Please login'})
+    }
+
+
+    // check data
+    const child_phone_number = req.body.child_phone_number
+    const expense  = req.body.expense
+    const type  = req.body.type
+    const password = req.body.password
+
+    if (
+        !child_phone_number||
+        !expense||
+        !type||
+        !password
+    ) return res.status(500).json({message:"Missing data"})
+
+
+    // check data pattern
+    const child_phone_number_regex = /^01[0-2|5]{1}[0-9]{8}$/.test(child_phone_number)
+    const expense_regex = /^[1-9]\d*$/.test(expense)
+    const type_regex = /^(daily|weekly|monthly|none)$/.test(type)
+    const password_regex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(password)
+
+    if (
+        !child_phone_number_regex||
+        !expense_regex||
+        !type_regex||
+        !password_regex
+    ) return res.status(500).json({message:"Data pattern error"})
+
+    try {
+
+        // check password
+        if (!await bcrypt.compare(password,await readPasswordByPhoneNumber(user.wallet)))
+            return res.status(500).json({message:'Error password'})
+
+        // update
+        await updateExpenseAndTypeChildByPhoneNumber(child_phone_number,user.wallet,expense,type)
+
+        // done
+        res.send('done')
+
+    }catch (e) {
+        return res.status(500).json({message:'Something went wrong'})
+    }
+
+})
+
+
+
+
+
+app.delete('/delete',async (req,res)=>{
+
+    // Verify the session
+    const token = req.headers.authorization
+    let user ;
+
+    try {
+        user = await jwt.verify(token,process.env.secret)
+    }catch (e) {
+        return res.status(500).json({message:'Please login'})
+    }
+
+
+    // check data
+    const child_phone_number = req.body.child_phone_number
+    const password = req.body.password
+
+
+    if (
+        !child_phone_number||
+        !password
+    ) return res.status(500).json({message:"Missing data"})
+
+
+    // check data pattern
+    const child_phone_number_regex = /^01[0-2|5]{1}[0-9]{8}$/.test(child_phone_number)
+    const password_regex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(password)
+
+    if (
+        !child_phone_number_regex||
+        !password_regex
+    ) return res.status(500).json({message:"Data pattern error"})
+
+    try {
+
+        // check password
+        if (!await bcrypt.compare(password,await readPasswordByPhoneNumber(user.wallet)))
+            return res.status(500).json({message:'Error password'})
+
+        // delete
+        await deleteChildByPhoneNumber(child_phone_number,user.wallet)
+
+        // done
+        res.send('done')
+
+    }catch (e) {
+        return res.status(500).json({message:'Something went wrong'})
+    }
+
+})
 
 
 

@@ -62,6 +62,20 @@ export async function readBalanceCreditCardsByPhoneNumber(wallets_phone_number )
 }
 
 //////////// update ////////////////////
+
+export async function updateCreditCardBalanceByPhoneNumber(wallets_phone_number ,balance) {
+
+    const sql =  `
+    update creditcards 
+    set balance = ${balance}
+    where wallets_phone_number  = ${wallets_phone_number}
+    `
+
+    const snap = await pool.execute(sql)
+
+    return true
+}
+
 //////////// delete ////////////////////
 //////////// check ////////////////////
 //////////// math ////////////////////

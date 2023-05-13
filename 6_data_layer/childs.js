@@ -108,7 +108,38 @@ export async function updateExpenseChildByPhoneNumber(phone_number,expense) {
     return true
 }
 
+
+export async function updateExpenseAndTypeChildByPhoneNumber(phone_number,wallets_phone_number,expense,type) {
+
+    const sql =  `
+    update childs 
+    set expense = ${expense},
+    type = ${type}
+    where phone_number = ${phone_number}
+    and wallets_phone_number = ${wallets_phone_number}
+    `
+
+    const snap = await pool.execute(sql)
+
+    return true
+}
+
+
 ///////////// delete ///////////////////
+
+export async function deleteChildByPhoneNumber(phone_number,wallets_phone_number) {
+
+    const sql =  `
+    DELETE FROM childs 
+    WHERE phone_number = ${phone_number}
+    and wallets_phone_number = ${wallets_phone_number}
+    `
+
+    const snap = await pool.execute(sql)
+
+    return true
+}
+
 ///////////// check ///////////////////
 
 export async function checkChildForAPhoneNumber(phone_number) {

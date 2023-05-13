@@ -1,6 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
-import {checkTheLimitsOfTheApplication,createApplication,checkTheLimitsOfTheApplicationName,readAllApplicationByWalletPhoneNumber} from "../../6_data_layer/applications.js";
+import {checkTheLimitsOfTheApplication,createApplication,checkTheLimitsOfTheApplicationName,readAllApplicationByWalletPhoneNumber,deleteApplicationByName} from "../../6_data_layer/applications.js";
 import jwt from "jsonwebtoken";
 import {readPasswordByPhoneNumber,readIdByPhoneNumber} from "../../6_data_layer/wallets.js";
 import bcrypt from "bcrypt";
@@ -113,6 +113,56 @@ app.get('/read-all',async (req,res)=>{
 
 
 
+app.delete('/delete',async (req,res)=>{
+
+    // Verify the session
+    const token = req.headers.authorization
+    let user ;
+
+    try {
+        user = await jwt.verify(token,process.env.secret)
+    }catch (e) {
+        return res.status(500).json({message:'Please login'})
+    }
+
+
+    // check data
+    const app_name = req.body.app_name
+    const password = req.body.password
+
+
+    if (
+        !app_name||
+        !password
+    ) return res.status(500).json({message:"Missing data"})
+
+
+    // check data pattern
+    const app_name_regex = /^[a-zA-Z]+$/.test(app_name)
+    const password_regex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(password)
+
+    if (
+        !app_name_regex||
+        !password_regex
+    ) return res.status(500).json({message:"Data pattern error"})
+
+    try {
+
+        // check password
+        if (!await bcrypt.compare(password,await readPasswordByPhoneNumber(user.wallet)))
+            return res.status(500).json({message:'Error password'})
+
+        // delete
+        await deleteApplicationByName(user.wallet,app_name)
+
+        // done
+        res.send('done')
+
+    }catch (e) {
+        return res.status(500).json({message:'Something went wrong'})
+    }
+
+})
 
 
 export default app

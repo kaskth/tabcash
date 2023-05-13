@@ -1,7 +1,7 @@
 import {updateBalanceByPhoneNumber,readBalanceByPhoneNumber,readIdByPhoneNumber} from "../6_data_layer/wallets.js";
 import {createTransaction} from "../6_data_layer/transactions.js";
 import {readBalanceChildByPhoneNumber,readExpenseChildByPhoneNumber,updateExpenseChildByPhoneNumber,updateBalanceChildByPhoneNumber} from "../6_data_layer/childs.js";
-
+import {readBalanceCreditCardsByPhoneNumber,updateCreditCardBalanceByPhoneNumber} from "../6_data_layer/creditcards.js";
 
 
 export async function transferToWallet(sender,receiver,amount) {
@@ -19,7 +19,7 @@ export async function transferToWallet(sender,receiver,amount) {
         wallets_id: await readIdByPhoneNumber(sender),
         wallets_phone_number:sender,
         company_name: null,
-        description: null,
+        description: `Transfer an amount to ${receiver}`,
         user_type:'main',
         transaction_type : 'transfer',
         sender_phone_number: sender,
@@ -30,6 +30,33 @@ export async function transferToWallet(sender,receiver,amount) {
 
 }
 
+
+
+export async function transferToSmartCard(phone_number,amount) {
+
+    const wallet_balance = await readBalanceByPhoneNumber(phone_number)
+    const smartCard_balance = await readBalanceCreditCardsByPhoneNumber(phone_number)
+
+    const new_wallet_balance = parseInt(wallet_balance) - parseInt(amount)
+    const new_smartCard_balance = parseInt(smartCard_balance) + parseInt(amount)
+
+    await updateBalanceByPhoneNumber(phone_number,new_wallet_balance.toFixed(2))
+    await updateCreditCardBalanceByPhoneNumber(phone_number,new_smartCard_balance)
+
+    await createTransaction({
+        wallets_id: await readIdByPhoneNumber(phone_number),
+        wallets_phone_number:phone_number,
+        company_name: null,
+        description: 'transferred to a smart card',
+        user_type:'main',
+        transaction_type : 'transfer',
+        sender_phone_number: 'my wallet',
+        receiver_phone_number: 'my smart card',
+        amount ,
+        status : 'success'
+    })
+
+}
 
 
 export async function transferMainToChild(main,child,amount) {
